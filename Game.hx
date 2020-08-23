@@ -60,7 +60,7 @@ class Game extends hxd.App
     {
         for (skeleton in skeletons)
         {
-            skeleton.advanceTime(1 / 60);
+            skeleton.advanceTime(dt);
         }
     }
 }

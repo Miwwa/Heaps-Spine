@@ -129,7 +129,7 @@ class SpineSprite extends h2d.Drawable
 		super(parent);
 
 		skeleton = new Skeleton(skeletonData);
-		skeleton.flipY = true;
+		skeleton.scaleY = -1;
 		skeleton.updateWorldTransform();
 
 		content = new SpineContent();
