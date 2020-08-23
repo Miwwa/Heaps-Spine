@@ -324,6 +324,7 @@ class SkeletonBinary
 			}
 			data.target = skeletonData.bones[ReadVarint(input, true)];
 			data.mix = ReadFloat(input);
+			data.softness = ReadFloat(input) * scale;
 			data.bendDirection = ReadSByte(input);
 			skeletonData.ikConstraints.push(data);
 		}
@@ -467,7 +468,7 @@ class SkeletonBinary
 				var attachment:Attachment = ReadAttachment(input, skeletonData, skin, slotIndex, name, nonessential);
 				if (attachment != null) 
 				{
-					skin.addAttachment(slotIndex, name, attachment);
+					skin.setAttachment(slotIndex, name, attachment);
 				}
 			}
 		}
@@ -614,14 +615,13 @@ class SkeletonBinary
 				
 				mesh.setPath(path);
 				mesh.getColor().set(color.x / 255, color.y / 255, color.z / 255, color.w / 255);
-				mesh.setInheritDeform(inheritDeform);
-				if (nonessential) 
+				if (nonessential)
 				{
 					mesh.setWidth(width * scale);
 					mesh.setHeight(height * scale);
 				}
 				
-				linkedMeshes.push(new LinkedMesh(mesh, skinName, slotIndex, parent));
+				linkedMeshes.push(new LinkedMesh(mesh, skinName, slotIndex, parent, inheritDeform));
 				return mesh;
 			
 			case AttachmentType.path:
@@ -916,7 +916,8 @@ class SkeletonBinary
 			timeline.ikConstraintIndex = index;
 			for (frameIndex in 0...frameCount) 
 			{
-				timeline.setFrame(frameIndex, ReadFloat(input), ReadFloat(input), ReadSByte(input));
+				timeline.setFrame(frameIndex, ReadFloat(input), ReadFloat(input), ReadFloat(input) * scale, ReadSByte(input), ReadBoolean(input),
+				    ReadBoolean(input));
 				if (frameIndex < frameCount - 1) 
 				{
 					ReadCurve(input, frameIndex, timeline);
