@@ -1,7 +1,6 @@
 import spine.support.graphics.TextureAtlas;
 import spine.SkeletonData;
 import spine.SkeletonJson;
-import spine.SkeletonBinary;
 import spine.attachments.AtlasAttachmentLoader;
 
 class Game extends hxd.App
@@ -19,8 +18,8 @@ class Game extends hxd.App
     {
         skeletons = [];
         
-        var spineboyLoader:spine.HeapsTextureLoader = new spine.HeapsTextureLoader("spineboy-pro.png");
-        var spineboyAtlasData = hxd.Res.load("spineboy-pro.atlas").toText();
+        var spineboyLoader:spine.HeapsTextureLoader = new spine.HeapsTextureLoader("spineboy.png");
+        var spineboyAtlasData = hxd.Res.load("spineboy.atlas").toText();
         var alienAtlas:TextureAtlas = new TextureAtlas(spineboyAtlasData, spineboyLoader);
         
         // You can load animations from json files:
@@ -34,33 +33,13 @@ class Game extends hxd.App
         spineboySkeleton.x = 200;
         spineboySkeleton.y = 500;
         skeletons.push(spineboySkeleton);
-        
-        var alienLoader:spine.HeapsTextureLoader = new spine.HeapsTextureLoader("alien.png");
-        var alienAtlasData = hxd.Res.load("alien.atlas").toText();
-        var alienAtlas:TextureAtlas = new TextureAtlas(alienAtlasData, alienLoader);
-
-        // Or you can load animations from binary files:
-        var binary:SkeletonBinary = new SkeletonBinary(new AtlasAttachmentLoader(alienAtlas));
-        binary.setScale(0.6);
-        var bytes = hxd.Res.load("alien-pro.skel").entry.getBytes();
-        var alienSkeletonData:SkeletonData = binary.readSkeletonDataFromBytes(bytes, "alien-pro.skel");
-
-        var alienSkeleton = new spine.SpineAnimation(alienSkeletonData, s2d);
-        alienSkeleton.state.setAnimationByName(0, "run", true);
-        alienSkeleton.x = s2d.width - 200;
-        alienSkeleton.y = 500;
-        alienSkeleton.scaleX = -1;
-        skeletons.push(alienSkeleton);
-
-        spineboySkeleton.smooth = true;
-        alienSkeleton.smooth = true;
     }
 
     override function update(dt:Float) 
     {
         for (skeleton in skeletons)
         {
-            skeleton.advanceTime(1 / 60);
+            skeleton.advanceTime(dt);
         }
     }
 }
